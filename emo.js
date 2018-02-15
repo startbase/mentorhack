@@ -1,10 +1,15 @@
 const request = require('request');
+const fs    = require('fs'),
+const nconf = require('nconf');
+
+nconf.argv()
+    .file({file: './config.json'});
+
 
 class Emo {
 
     createUrl(image) {
-        let ip = '172.01.102.3:3021/';
-        return 'http://' + ip + image;
+        return 'http://' + nconf.get('url') + '/' + image;
     }
 
     go(image, num, callback) {
@@ -15,12 +20,12 @@ class Emo {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Ocp-Apim-Subscription-Key': '345657567'
+                'Ocp-Apim-Subscription-Key': nconf.get('key');
             },
             body: JSON.stringify({
                 url: image_url
             })
-        }
+        };
 
         request(options, (error, response, body) => {
             if (!error && response.statusCode == 200) {
